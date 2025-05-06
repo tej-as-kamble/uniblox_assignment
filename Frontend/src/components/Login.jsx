@@ -4,8 +4,8 @@ import './Login.css';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');  // Added state for the user's name
-  const [isSignUp, setIsSignUp] = useState(false); // State to toggle between login and signup
+  const [name, setName] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();

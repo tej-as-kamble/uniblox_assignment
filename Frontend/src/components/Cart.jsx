@@ -15,8 +15,47 @@ function Cart() {
       details: ["Heart-rate monitor", "Water-resistant", "GPS tracking"],
       image: "https://www.w3schools.com/w3images/fjords.jpg",
       quantity: 2
+    },
+    {
+      id: 1,
+      name: "Wireless Headphones",
+      details: ["Bluetooth over-ear", "Noise cancellation", "Long battery life"],
+      image: "https://www.w3schools.com/w3images/lights.jpg",
+      quantity: 1
+    },
+    {
+      id: 2,
+      name: "Smart Watch",
+      details: ["Heart-rate monitor", "Water-resistant", "GPS tracking"],
+      image: "https://www.w3schools.com/w3images/fjords.jpg",
+      quantity: 2
+    },
+    {
+      id: 1,
+      name: "Wireless Headphones",
+      details: ["Bluetooth over-ear", "Noise cancellation", "Long battery life"],
+      image: "https://www.w3schools.com/w3images/lights.jpg",
+      quantity: 1
+    },
+    {
+      id: 2,
+      name: "Smart Watch",
+      details: ["Heart-rate monitor", "Water-resistant", "GPS tracking"],
+      image: "https://www.w3schools.com/w3images/fjords.jpg",
+      quantity: 2
     }
   ]);
+
+  const [coupon, setCoupon] = useState("");
+  const [status, setStatus] = useState('');
+
+  const handleApplyCoupon = () => {
+    if (coupon.trim() === 'SAVE20OFF') {
+      setStatus('✅ Coupon applied successfully! You saved 10%.');
+    } else {
+      setStatus('❌ Invalid coupon code. Please try again later.');
+    }
+  };
 
   const increaseQuantity = (id) => {
     setProducts(products.map(p =>
@@ -62,7 +101,25 @@ function Cart() {
               </div>
             </div>
           ))}
-          <button className="order-btn">Order Now</button>
+
+          <div className="coupon-section">
+            <input
+              type="text"
+              placeholder="Enter coupon code"
+              value={coupon}
+              onChange={(e) => setCoupon(e.target.value)}
+              className="coupon-input"
+            />
+            <button className="apply-coupon-btn" onClick={handleApplyCoupon}>Apply</button>
+          </div>
+
+          {status && <div className="coupon-status">
+            <p>{status}</p>
+          </div>}
+
+          <div className="order-btn">
+            <button>Order Now</button>
+          </div>
         </>
       )}
     </div>

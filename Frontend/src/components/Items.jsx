@@ -1,7 +1,6 @@
 import React from 'react';
 
 function Items() {
-  // Example list of products, you can replace it with your actual data
   const products = [
     {
       id: 1,

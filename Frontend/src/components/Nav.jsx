@@ -34,6 +34,12 @@ function Nav({ setActiveComponent }) {
       </div>
 
       <div className="nav-right">
+        <span>
+          <button className={`fancy-btn ${activeIcon === 'discount' ? 'fancy-btn-active' : ''}`}
+          onClick={() => handleIconClick('discount')}>
+            Get Discount
+          </button>
+          </span>  
         <span
           className={`icon ${activeIcon === 'cart' ? 'nav-icon-clicked' : ''}`}
           onClick={() => handleIconClick('cart')}

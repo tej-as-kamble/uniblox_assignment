@@ -1,7 +1,7 @@
 .main-content {
-    height: calc(100vh - 80px);
+    height: calc(100vh - 160px);
     background-color: #fffcd0;
-    padding: 80px 17%;
+    padding: 80px 17% 80px;
     overflow-y: auto;
 }
 
@@ -26,7 +26,7 @@
 .item-image {
   width: 150px;
   height: 150px;
-  object-fit: cover; /* Makes sure the image fits within the box without distortion */
+  object-fit: cover;
   border-radius: 8px;
 }
 
@@ -137,6 +137,11 @@
 }
 
 .order-btn {
+  display: flex;
+  justify-content: center;
+}
+
+.order-btn button{
   margin-top: 25px;
   padding: 12px 24px;
   background-color: green;
@@ -145,6 +150,47 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+
+
+
+
+
+.coupon-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.coupon-input {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 200px;
+}
+
+.apply-coupon-btn {
+  padding: 10px 16px;
+  background: linear-gradient(166deg, #4c75ff, #ff416c);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.apply-coupon-btn:hover {
+  background: linear-gradient(166deg, #ff416c, #4c75ff);
+}
+
+.coupon-status {
+  display: flex;
+  justify-content: center;
 }
 
 

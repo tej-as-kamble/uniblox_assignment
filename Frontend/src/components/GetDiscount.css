@@ -1,0 +1,98 @@
+.coupon-status-container {
+    padding: 30px;
+    margin: 80px auto;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    width: 420px;
+    margin: 50px auto;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.coupon-info {
+    margin-bottom: 30px;
+}
+
+.coupon-info h2 {
+    color: #2c2bff;
+    margin-bottom: 12px;
+}
+
+.coupon-info p {
+    margin: 8px 0;
+    color: #333;
+}
+
+.claim-btn,
+.request-btn,
+.copy-btn {
+    padding: 10px 18px;
+    background: linear-gradient(166deg, #4c75ff, #ff416c);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.claim-btn:hover,
+.request-btn:hover,
+.copy-btn:hover {
+    background: linear-gradient(166deg, #ff416c, #4c75ff);
+}
+
+.copy-btn {
+    margin-left: 12px;
+}
+
+.claim-btn:active,
+.request-btn:active,
+.copy-btn:active {
+    transform: scale(0.96);
+}
+
+.coupon-box {
+    margin: 16px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.coupon-code {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #f2f2ff;
+    color: #2c2bff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+}
+
+.extra-info {
+    padding: 22px;
+    border-radius: 10px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+.extra-info h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #444;
+}
+
+.extra-info ul {
+    list-style-type: disc;
+    padding-left: 22px;
+    margin: 0;
+}
+
+.extra-info li {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #666;
+}

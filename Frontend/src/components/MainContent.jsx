@@ -5,6 +5,8 @@ import Cart from './Cart.jsx';
 import Order from './Order.jsx';
 import Items from './Items.jsx';
 import Login from './Login.jsx';
+import GetDiscount from './GetDiscount.jsx'
+import Admin from './Admin.jsx';
 
 
 function MainContent() {
@@ -19,12 +21,16 @@ function MainContent() {
   
   const renderComponent = () => {
     switch (activeComponent) {
-      case 'cart':
-        return <Cart />;
-      case 'order':
-        return <Order />;
       case 'login':
-        return <Login />;
+        return <Login/>;
+      case 'admin':
+        return <Admin/>
+      case 'cart':
+        return <Cart/>;
+      case 'order':
+        return <Order/>;
+      case 'discount':
+        return <GetDiscount/>
       default:
         return <Items className="main-content-item" />;
     }
