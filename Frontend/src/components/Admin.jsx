@@ -63,7 +63,7 @@ const Admin = () => {
         </div>
         <div className="stat">
           <h3>Total Purchase Amount</h3>
-          <p>${totalPurchaseAmount}</p>
+          <p>₹{totalPurchaseAmount}</p>
         </div>
       </div>
 
@@ -74,7 +74,7 @@ const Admin = () => {
         </div>
         <div className="stat">
           <h3>Total Discount Given</h3>
-          <p>${totalDiscountGiven}</p>
+          <p>₹{totalDiscountGiven}</p>
         </div>
       </div>
 
@@ -98,7 +98,7 @@ const Admin = () => {
                 <td>{user.userName}</td>
                 <td>{user.code}</td>
                 <td>{user.couponStatus}</td>
-                <td>${user.discountAmount}</td>
+                <td>₹{user.discountAmount}</td>
                 <td>{user.requestStatus}</td>
                 <td>
                   {user.requestStatus === "Pending" && (

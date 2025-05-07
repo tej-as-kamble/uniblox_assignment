@@ -1,22 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isSignUp, setIsSignUp] = useState(false);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
+
+  useEffect(() => {
+    setIsSignUp(location.pathname === '/signup');
+  }, [location.pathname]);
 
   const handleLogin = (e) => {
     e.preventDefault();
     console.log('Login with:', { email, password });
-    // add login logic here
+    // Add your login logic here
   };
 
   const handleSignUp = (e) => {
     e.preventDefault();
     console.log('Signup with:', { name, email, password });
-    // add signup logic here
+    // Add your signup logic here
   };
 
   return (
@@ -24,7 +32,7 @@ function Login() {
       {isSignUp ? (
         <>
           <h2>Sign Up</h2>
-          <br/>
+          <br />
           <form onSubmit={handleSignUp} className="auth-form">
             <input
               type="text"
@@ -49,10 +57,13 @@ function Login() {
             />
             <button type="submit">Sign Up</button>
           </form>
-          <br/>
+          <br />
           <p>
             Already have an account?{' '}
-            <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setIsSignUp(false)}>
+            <span
+              style={{ color: 'blue', cursor: 'pointer' }}
+              onClick={() => navigate('/login')}
+            >
               Login
             </span>
           </p>
@@ -60,7 +71,7 @@ function Login() {
       ) : (
         <>
           <h2>Login</h2>
-          <br/>
+          <br />
           <form onSubmit={handleLogin} className="auth-form">
             <input
               type="email"
@@ -78,10 +89,13 @@ function Login() {
             />
             <button type="submit">Login</button>
           </form>
-          <br/>
+          <br />
           <p>
             Don't have an account?{' '}
-            <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setIsSignUp(true)}>
+            <span
+              style={{ color: 'blue', cursor: 'pointer' }}
+              onClick={() => navigate('/signup')}
+            >
               Sign Up
             </span>
           </p>

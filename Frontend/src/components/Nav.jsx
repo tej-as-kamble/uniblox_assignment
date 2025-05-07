@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import './Nav.css';
 import { useState } from 'react';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
@@ -7,14 +8,15 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ProfileOptions from './ProfileOptions';
 
-function Nav({ setActiveComponent }) {
+function Nav() {
+  const navigate = useNavigate();
   const [activeIcon, setActiveIcon] = useState(null);
   const [showProfileOptions, setShowProfileOptions] = useState(false);
 
-  const handleIconClick = (icon) => {
+  const handleIconClick = (path) => {
     setShowProfileOptions(false);
-    setActiveComponent(icon);
-    setActiveIcon(icon);
+    setActiveIcon(path);
+    navigate(path === 'home' ? '/' : `/${path}`);
   };
 
   const handleProfileIconClick = () => {
@@ -35,11 +37,13 @@ function Nav({ setActiveComponent }) {
 
       <div className="nav-right">
         <span>
-          <button className={`fancy-btn ${activeIcon === 'discount' ? 'fancy-btn-active' : ''}`}
-          onClick={() => handleIconClick('discount')}>
+          <button
+            className={`fancy-btn ${activeIcon === 'discount' ? 'fancy-btn-active' : ''}`}
+            onClick={() => handleIconClick('discount')}
+          >
             Get Discount
           </button>
-          </span>  
+        </span>
         <span
           className={`icon ${activeIcon === 'cart' ? 'nav-icon-clicked' : ''}`}
           onClick={() => handleIconClick('cart')}
@@ -66,7 +70,11 @@ function Nav({ setActiveComponent }) {
         </span>
       </div>
 
-      {showProfileOptions && <ProfileOptions setActiveComponent={setActiveComponent} setShowProfileOptions={setShowProfileOptions}/>}
+      {showProfileOptions && (
+        <ProfileOptions
+          setShowProfileOptions={setShowProfileOptions}
+        />
+      )}
     </div>
   );
 }
