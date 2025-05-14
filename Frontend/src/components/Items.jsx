@@ -1,55 +1,76 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Items() {
-  const products = [
-    {
-      id: 1,
-      name: 'Product 1',
-      image: 'https://www.w3schools.com/w3images/lights.jpg',
-      price: '10.00', // Add price
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      image: 'https://www.w3schools.com/w3images/fjords.jpg', 
-      price: '15.00', // Add price
-    },
-    {
-      id: 3,
-      name: 'Product 3',
-      image: 'https://www.w3schools.com/w3images/mountains.jpg',
-      price: '20.00', // Add price
-    },
-    {
-      id: 4,
-      name: 'Product 4',
-      image: 'https://www.w3schools.com/w3images/lights.jpg',
-      price: '25.00', // Add price
-    },
-    {
-      id: 5,
-      name: 'Product 5',
-      image: 'https://www.w3schools.com/w3images/fjords.jpg',
-      price: '30.00', // Add price
-    },
-    {
-      id: 6,
-      name: 'Product 6',
-      image: 'https://www.w3schools.com/w3images/mountains.jpg',
-      price: '35.00', // Add price
-    },
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/items');
+        const data = await response.json();
+        setProducts(data); // Set the fetched data to state
+      } catch (err) {
+        setError('Failed to load products');
+      } finally {
+        setLoading(false);  // Stop loading when done
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleAddToCart = async (itemId) => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert('Please log in to add items to the cart');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/users/add-item', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ itemId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Item added to cart successfully!');
+      } else {
+        alert(data.message || 'Failed to add item to cart');
+      }
+    } catch (error) {
+      alert('Error adding item to cart');
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="items-container">
       {products.map((product) => (
-        <div key={product.id} className="item">
-          <img src={product.image} alt={product.name} className="item-image" />
-          <h3 className="item-name">{product.name}</h3>
+        <div key={product._id} className="item">
+          <img src={product.imgUrl} alt={product.itemName} className="item-image" />
+          <h3 className="item-name">{product.itemName}</h3>
           <p className="item-price">₹{product.price}</p>
           <div className="item-actions">
             <button className="btn">More Details</button>
-            <button className="btn">Add to Cart</button>
+            <button className="btn" onClick={() => handleAddToCart(product._id)}>
+              Add to Cart
+            </button>
           </div>
         </div>
       ))}

@@ -1,44 +1,57 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Cart() {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Wireless Headphones",
-      details: ["Bluetooth over-ear", "Noise cancellation", "Long battery life"],
-      image: "https://www.w3schools.com/w3images/lights.jpg",
-      price: 5000, // price in INR
-      quantity: 1
-    },
-    {
-      id: 2,
-      name: "Smart Watch",
-      details: ["Heart-rate monitor", "Water-resistant", "GPS tracking"],
-      image: "https://www.w3schools.com/w3images/fjords.jpg",
-      price: 8000, // price in INR
-      quantity: 2
-    },
-    {
-      id: 3,
-      name: "Wireless Headphones",
-      details: ["Bluetooth over-ear", "Noise cancellation", "Long battery life"],
-      image: "https://www.w3schools.com/w3images/lights.jpg",
-      price: 5000, // price in INR
-      quantity: 1
-    },
-    {
-      id: 4,
-      name: "Smart Watch",
-      details: ["Heart-rate monitor", "Water-resistant", "GPS tracking"],
-      image: "https://www.w3schools.com/w3images/fjords.jpg",
-      price: 8000, // price in INR
-      quantity: 2
-    },
-  ]);
-
+  const [products, setProducts] = useState([]);
   const [coupon, setCoupon] = useState("");
   const [status, setStatus] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/users/get-cart', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch cart items');
+        }
+
+        const cartData = await response.json();
+        const productDetails = await Promise.all(cartData.cart.map(async (item) => {
+          const itemResponse = await fetch(`http://localhost:5000/api/items/${item.item}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (!itemResponse.ok) {
+            throw new Error(`Failed to fetch details for item ${item.item}`);
+          }
+
+          const itemData = await itemResponse.json();
+          return {
+            ...itemData,
+            quantity: item.quantity,
+            _id: item.item
+          };
+        }));
+        console.log(productDetails);
+        setProducts(productDetails);
+      } catch (error) {
+        console.error('Error fetching cart items or item details:', error);
+      }
+    };
+
+    fetchProducts();
+  }, [token]);
 
   const handleApplyCoupon = () => {
     if (coupon.trim() === 'SAVE20OFF') {
@@ -50,20 +63,73 @@ function Cart() {
     }
   };
 
-  const increaseQuantity = (id) => {
-    setProducts(products.map(p =>
-      p.id === id ? { ...p, quantity: p.quantity + 1 } : p
-    ));
+  const increaseQuantity = async (_id) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/increase-quantity', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ itemId: _id }) // Use _id here
+      });
+      if (!response.ok) {
+        throw new Error('Failed to increase quantity');
+      }
+      const data = await response.json();
+      // console.log(data);
+      setProducts(products.map(p =>
+        p._id === _id ? { ...p, quantity: p.quantity + 1 } : p // Use _id here
+      ));
+    } catch (error) {
+      console.error('Error increasing quantity:', error);
+      alert('Error increasing quantity');
+    }
   };
 
-  const decreaseQuantity = (id) => {
-    setProducts(products.map(p =>
-      p.id === id && p.quantity > 1 ? { ...p, quantity: p.quantity - 1 } : p
-    ));
+  const decreaseQuantity = async (_id) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/decrease-quantity', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ itemId: _id })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to decrease quantity');
+      }
+      const data = await response.json();
+      setProducts(products.map(p =>
+        p._id === _id && p.quantity > 1 ? { ...p, quantity: p.quantity - 1 } : p
+      ));
+    } catch (error) {
+      console.error('Error decreasing quantity:', error);
+      alert('Error decreasing quantity');
+    }
   };
 
-  const removeProduct = (id) => {
-    setProducts(products.filter(p => p.id !== id));
+  const removeProduct = async (_id) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/remove-item', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ itemId: _id })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to remove product');
+      }
+      const data = await response.json();
+      setProducts(products.filter(p => p._id !== _id));
+      alert('Product removed successfully!');
+    } catch (error) {
+      console.error('Error removing product:', error);
+      alert('Error removing product');
+    }
   };
 
   const calculateTotal = () => {
@@ -80,29 +146,29 @@ function Cart() {
   return (
     <div className="cart-container">
       <h1 className="main-content-heading">Your Order</h1>
-      {products.length === 0 ? (
+      {products && products.length === 0 ? (
         <p>No products in your order.</p>
       ) : (
         <>
-          {products.map(product => (
-            <div key={product.id} className="cart-item">
-              <img src={product.image} alt={product.name} className="product-img" />
+          {products && products.length > 0 && products.map(product => (
+            <div key={product._id} className="cart-item">
+              <img src={product.imgUrl} alt={product.name} className="product-img" />
               <div className="product-info">
-                <h2>{product.name}</h2>
-                <p className="product-price">₹{product.price}</p>
+                <h2>{product.itemName}</h2>
+                <p className="product-price">₹{product.price}/-</p>
                 <ul>
-                  {product.details.map((point, idx) => (
+                  {product.description && product.description.map((point, idx) => (
                     <li key={idx}>{point}</li>
                   ))}
                 </ul>
               </div>
               <div className="cart-actions">
                 <div className="quantity-controls">
-                  <button onClick={() => decreaseQuantity(product.id)}>-</button>
+                  <button onClick={() => decreaseQuantity(product._id)}>-</button>
                   <span>{product.quantity}</span>
-                  <button onClick={() => increaseQuantity(product.id)}>+</button>
+                  <button onClick={() => increaseQuantity(product._id)}>+</button>
                 </div>
-                <button className="remove-btn" onClick={() => removeProduct(product.id)}>Remove</button>
+                <button className="remove-btn" onClick={() => removeProduct(product._id)}>Remove</button>
               </div>
             </div>
           ))}

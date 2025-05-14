@@ -4,9 +4,14 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item' }],
+  cart: [
+    {
+      item: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
+      quantity: { type: Number, required: true, default: 1 }
+    }
+  ],
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item' }],
-  coupon: { type: Number, enum: [-1, 0, 1], default: 0 },
+  coupon: { type: Number, enum: [0, 1], default: 0 },
   orderCount: { type: Number, default: 0 },
   totalPurchaseAmount: { type: Number, default: 0 }
 });
