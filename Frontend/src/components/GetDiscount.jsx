@@ -30,7 +30,6 @@ const GetDiscount = () => {
       }
 
       const data = await response.json();
-      console.log(data);
 
       if (data.coupon === 0) {
         if (data.remaining !== 0) {

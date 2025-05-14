@@ -13,6 +13,9 @@ router.post("/decrease-quantity", userAuth, userController.decreaseQuantity);
 
 router.get("/coupon-status", userAuth, couponController.getCouponStatus);
 router.post("/create-coupon", userAuth, couponController.createCoupon);
+router.get("/verify-coupon", userAuth, couponController.verifyCoupon);
 
+router.post("/order-now", userAuth, userController.orderNow);
+router.get("/get-orders", userAuth, userController.getOrders);
 
 module.exports = router;

@@ -1,5 +1,5 @@
-const { body, param, validationResult } = require('express-validator');
-const User = require('../models/User');
+const { body, validationResult } = require('express-validator');
+const Coupon = require('../models/Coupon');
 
 // Add an item to cart
 exports.addToCart = [
@@ -118,4 +118,64 @@ exports.decreaseQuantity = [
 
 
 
+// to order cart
+exports.orderNow = [
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
+    const user = req.user;
+    const { totalPrice, discountedTotal, coupon } = req.body;
+
+    if (!totalPrice || totalPrice < 0) {
+      return res.status(400).json({ message: 'Invalid total amount' });
+    }
+
+    try {
+      if (coupon) {
+        const couponDoc = await Coupon.findOne({ discountCode : coupon, couponStatus: 0, requestStatus: 1 });
+
+        if (couponDoc) {
+          user.coupon = 0;
+          couponDoc.couponStatus = 1;
+          couponDoc.discountAmount = discountedTotal || 0;
+
+          await couponDoc.save();
+        } else {
+          return res.status(400).json({ message: 'INVALID Coupon' });
+        }
+      }
+
+      user.cart.forEach(entry => {
+        user.orders.push(entry.item);
+      });
+
+      user.cart = [];
+      user.orderCount += 1;
+      user.totalPurchaseAmount += totalPrice;
+
+      await user.save();
+
+      return res.status(200).json({ message: 'Order placed successfully' });
+    } catch (error) {
+      console.error('Order error:', error.message);
+      return res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+];
+
+// get orders
+exports.getOrders = [
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const user = req.user;
+
+    try {
+      res.status(200).json({ orders: user.orders });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+];

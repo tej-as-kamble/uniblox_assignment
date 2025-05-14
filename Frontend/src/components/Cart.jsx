@@ -43,7 +43,6 @@ function Cart() {
             _id: item.item
           };
         }));
-        console.log(productDetails);
         setProducts(productDetails);
       } catch (error) {
         console.error('Error fetching cart items or item details:', error);
@@ -53,16 +52,6 @@ function Cart() {
     fetchProducts();
   }, [token]);
 
-  const handleApplyCoupon = () => {
-    if (coupon.trim() === 'SAVE20OFF') {
-      setStatus('✅ Coupon applied successfully! You saved 10%.');
-      setDiscountApplied(true);
-    } else {
-      setStatus('❌ Invalid coupon code. Please try again later.');
-      setDiscountApplied(false);
-    }
-  };
-
   const increaseQuantity = async (_id) => {
     try {
       const response = await fetch('http://localhost:5000/api/users/increase-quantity', {
@@ -71,7 +60,7 @@ function Cart() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ itemId: _id }) // Use _id here
+        body: JSON.stringify({ itemId: _id })
       });
       if (!response.ok) {
         throw new Error('Failed to increase quantity');
@@ -79,7 +68,7 @@ function Cart() {
       const data = await response.json();
       // console.log(data);
       setProducts(products.map(p =>
-        p._id === _id ? { ...p, quantity: p.quantity + 1 } : p // Use _id here
+        p._id === _id ? { ...p, quantity: p.quantity + 1 } : p 
       ));
     } catch (error) {
       console.error('Error increasing quantity:', error);
@@ -132,20 +121,71 @@ function Cart() {
     }
   };
 
+  const handleApplyCoupon = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/verify-coupon?code=${coupon.trim()}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      if(data.verification){
+        setStatus('✅ Coupon applied successfully! You saved 10%.');
+        setDiscountApplied(true);
+      } else {
+        setStatus('❌ Invalid coupon code. Please try again later.');
+        setDiscountApplied(false);
+      }
+    } catch (error) {
+      console.error('Error in verification:', error);
+      alert(error);
+    }
+  };
+
   const calculateTotal = () => {
     return products.reduce((total, product) => total + product.price * product.quantity, 0);
   };
 
-  const calculateDiscountedTotal = (total) => {
-    return total * 0.9;
-  };
-
   const totalPrice = calculateTotal();
-  const discountedTotal = calculateDiscountedTotal(totalPrice);
+  const discountedTotal = totalPrice * 0.9;
+
+  const handleOrderNow = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/order-now', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          totalPrice,
+          discountedTotal,
+          coupon
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Order failed');
+      }
+
+      alert(data.message);
+    } catch (err) {
+      console.error('Error:', err.message);
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="cart-container">
-      <h1 className="main-content-heading">Your Order</h1>
+      <h1 className="main-content-heading">Your Cart</h1>
       {products && products.length === 0 ? (
         <p>No products in your order.</p>
       ) : (
@@ -203,7 +243,7 @@ function Cart() {
           </div>}
 
           <div className="order-btn">
-            <button>Order Now</button>
+            <button onClick={handleOrderNow}>Order Now</button>
           </div>
         </>
       )}

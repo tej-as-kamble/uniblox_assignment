@@ -65,7 +65,7 @@ exports.createCoupon = [
 
       
       const count = await Coupon.countDocuments({ mail: email });
-      const discountCode = `${firstName}SAVE10-${count + 1}`;
+      const discountCode = `${firstName}${count + 1}SAVE10`;
 
       const newCoupon = new Coupon({
         name,
@@ -82,6 +82,29 @@ exports.createCoupon = [
         message: 'Coupon created successfully',
         discountCode: newCoupon.discountCode
       });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+];
+
+
+exports.verifyCoupon = [
+  async (req, res) => {
+    try {
+      const { code } = req.query;
+      const user = req.user;
+
+      const activeCoupon = await Coupon.findOne({ discountCode : code, couponStatus: 0, requestStatus: 1});
+      if (!activeCoupon) {
+        return res.status(400).json({ verification: 0, message: 'INVALID Coupon' });
+      }
+
+      if(activeCoupon.mail === user.email){
+        res.status(201).json({ verification: 1, message: 'Coupon verified successfully'});
+      } else {
+        return res.status(400).json({ verification: 0, message: 'INVALID user' });
+      }
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
