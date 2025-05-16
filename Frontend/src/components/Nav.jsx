@@ -12,6 +12,7 @@ function Nav() {
   const navigate = useNavigate();
   const [activeIcon, setActiveIcon] = useState(null);
   const [showProfileOptions, setShowProfileOptions] = useState(false);
+  const email = localStorage.getItem('email');
 
   const handleIconClick = (path) => {
     setShowProfileOptions(false);
@@ -62,12 +63,12 @@ function Nav() {
         >
           <AccountCircleTwoToneIcon sx={{ fontSize: 30 }} />
         </span>
-        <span
+        {email==='admin@gmail.com' ? <span
           className={`icon ${activeIcon === 'admin' ? 'nav-icon-clicked' : ''}`}
           onClick={() => handleIconClick('admin')}
         >
           <AdminPanelSettingsIcon sx={{ fontSize: 35, color: activeIcon === 'admin' ? 'red' : 'black' }} />
-        </span>
+        </span> : <></>}
       </div>
 
       {showProfileOptions && (

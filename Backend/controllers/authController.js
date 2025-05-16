@@ -81,7 +81,10 @@ exports.login = [
                 expiresIn: '1d',
             });
 
-            res.header('Authorization', `Bearer ${accessToken}`).status(200).json({ token: accessToken });
+            res.header('Authorization', `Bearer ${accessToken}`).status(200).json({ 
+                token: accessToken,
+                email: user.email
+            });
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }

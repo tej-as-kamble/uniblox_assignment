@@ -32,6 +32,7 @@ function Login() {
       if (response.ok) {
         console.log(data);
         localStorage.setItem('token', data.token); 
+        localStorage.setItem('email', data.email);
         setMessage({ type: 'success', text: 'Login successful!' });
         navigate('/');
       } else {
@@ -60,6 +61,7 @@ function Login() {
       console.log(data);
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('email', data.email);
         setMessage({ type: 'success', text: 'Signup successful!' });
         navigate('/');
       } else {

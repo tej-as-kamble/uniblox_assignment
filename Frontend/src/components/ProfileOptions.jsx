@@ -6,6 +6,7 @@ function ProfileOptions({ setShowProfileOptions }) {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('email');
     setShowProfileOptions(false);
     navigate('/login');
   };
