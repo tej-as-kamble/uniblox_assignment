@@ -136,7 +136,7 @@ function Cart() {
       }
 
       if(data.verification){
-        setStatus('✅ Coupon applied successfully! You saved 10%.');
+        setStatus(`✅ Coupon applied successfully! You saved ${totalDiscount}.`);
         setDiscountApplied(true);
       } else {
         setStatus('❌ Invalid coupon code. Please try again later.');
@@ -154,6 +154,7 @@ function Cart() {
 
   const totalPrice = calculateTotal();
   const discountedTotal = totalPrice * 0.9;
+  const totalDiscount = totalPrice - discountedTotal;
 
   const handleOrderNow = async () => {
     try {
@@ -165,7 +166,7 @@ function Cart() {
         },
         body: JSON.stringify({
           totalPrice,
-          discountedTotal,
+          totalDiscount,
           coupon
         })
       });

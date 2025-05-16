@@ -125,7 +125,7 @@ exports.orderNow = [
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     const user = req.user;
-    const { totalPrice, discountedTotal, coupon } = req.body;
+    const { totalPrice, totalDiscount, coupon } = req.body;
 
     if (!totalPrice || totalPrice < 0) {
       return res.status(400).json({ message: 'Invalid total amount' });
@@ -134,11 +134,10 @@ exports.orderNow = [
     try {
       if (coupon) {
         const couponDoc = await Coupon.findOne({ discountCode : coupon, couponStatus: 0, requestStatus: 1 });
-
         if (couponDoc) {
           user.coupon = 0;
           couponDoc.couponStatus = 1;
-          couponDoc.discountAmount = discountedTotal || 0;
+          couponDoc.discountAmount = totalDiscount || 0;
 
           await couponDoc.save();
         } else {

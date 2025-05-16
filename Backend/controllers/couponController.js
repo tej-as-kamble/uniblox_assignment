@@ -11,33 +11,29 @@ exports.getCouponStatus = [
 
       const remaining = orderCount % n === 0 ? 0 : n - (orderCount % n);
 
-
       if (coupon === 0) {
         return res.status(200).json({ coupon: 0, orderCount, remaining });
       }
       
       if (coupon === 1) {
-        const couponDoc = await Coupon.findOne({ mail: email, couponStatus: 0 });
-
-        if (!couponDoc) {
-          user.coupon = 0;
-          await user.save();
-          return res.status(200).json({ coupon: 0, orderCount, remaining });
+        const couponAcc = await Coupon.findOne({ mail: email, couponStatus: 0, requestStatus: 1});
+        if (couponAcc) {
+          return res.status(200).json({ coupon: 1, isCoupon: 1, discountCode: couponAcc.discountCode});
+        } 
+        
+        const coupon0 = await Coupon.findOne({ mail: email, couponStatus: 0, requestStatus: 0});
+        if (coupon0) {
+          return res.status(200).json({ coupon: 1, isCoupon: 0 });
         }
 
-        const { requestStatus, discountCode } = couponDoc;
+        const couponRej = await Coupon.findOne({ mail: email, couponStatus: 0, requestStatus: -1});
 
-        if (requestStatus === 1) {
-          return res.status(200).json({ coupon: 1, isCoupon: 1, discountCode });
-        } else if (requestStatus === 0) {
-          return res.status(200).json({ coupon: 1, isCoupon: 0 });
-        } else if (requestStatus === -1) {
+        if (couponRej) {
           user.coupon = 0;
           await user.save();
           return res.status(200).json({ coupon: 0, orderCount, remaining, message: 'Coupon request was rejected' });
         }
       }
-
       res.status(400).json({ message: 'Invalid coupon value' });
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
@@ -54,12 +50,13 @@ exports.createCoupon = [
       const user = req.user;
       const { name, email } = user;
 
+      user.coupon = 1;
+      await user.save();
+
       const firstName = name.trim().split(' ')[0];
 
-      const activeCoupon = await Coupon.findOne({ mail: email, couponStatus: 0 });
+      const activeCoupon = await Coupon.findOne({ mail: email, couponStatus: 0, requestStatus: { $ne: -1 } });
       if (activeCoupon) {
-        user.coupon = 1;
-        await user.save();
         return res.status(400).json({ message: 'Coupon already exists for this user' });
       }
 
@@ -72,9 +69,6 @@ exports.createCoupon = [
         mail: email,
         discountCode
       });
-
-      user.coupon = 1;
-      await user.save();
 
       await newCoupon.save();
 
