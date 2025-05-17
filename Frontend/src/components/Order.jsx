@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 function Order() {
   const [products, setProducts] = useState([]);
   const token = localStorage.getItem('token');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
+        setLoading(true);
         const response = await fetch('https://uniblox-assignment.onrender.com/api/users/get-orders', {
           method: 'GET',
           headers: {
@@ -44,6 +46,8 @@ function Order() {
         setProducts(orderDetails);
       } catch (error) {
         console.error('Error fetching orders or item details:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -53,6 +57,11 @@ function Order() {
 
   return (
     <div className="cart-container">
+      {loading && (
+        <div className="spinner-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <h1 className='main-content-heading'>Your Order</h1>
         {products.map((product, index) => (
           <div key={product._id || index} className="cart-item">

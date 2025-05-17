@@ -9,6 +9,7 @@ const GetDiscount = () => {
   const [ordersCompleted, setOrdersCompleted] = useState(0);
   const [remainingOders, setRemainingOders] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const GetDiscount = () => {
 
   const getStatus = async () => {
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/users/coupon-status', {
         method: 'GET',
         headers: {
@@ -54,11 +56,14 @@ const GetDiscount = () => {
 
     } catch (error) {
       console.error('Error fetching coupon status:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCouponRequest = async () => {
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/users/create-coupon', {
         method: 'POST',
         headers: {
@@ -76,6 +81,8 @@ const GetDiscount = () => {
       }
     } catch (error) {
       console.error('Error requesting coupon:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,6 +94,11 @@ const GetDiscount = () => {
 
   return (
     <div className="coupon-status-container">
+      {loading && (
+        <div className="spinner-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       {hasCoupon ? (
         <div className="coupon-info">
           {isCoupon ? (

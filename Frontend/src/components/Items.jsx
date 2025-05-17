@@ -8,6 +8,7 @@ function Items() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const response = await fetch('https://uniblox-assignment.onrender.com/api/items');
         const data = await response.json();
         setProducts(data); // Set the fetched data to state
@@ -30,6 +31,7 @@ function Items() {
     }
 
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/users/add-item', {
         method: 'POST',
         headers: {
@@ -48,19 +50,18 @@ function Items() {
       }
     } catch (error) {
       alert('Error adding item to cart');
+    } finally {
+      setLoading(false);  // Stop loading when done
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>; 
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div className="items-container">
+      {loading && (
+        <div className="spinner-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       {products.map((product) => (
         <div key={product._id} className="item">
           <img src={product.imgUrl} alt={product.itemName} className="item-image" />

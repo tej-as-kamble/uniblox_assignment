@@ -7,6 +7,7 @@ function Login() {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [loading, setLoading] = useState(false);
 
 
   const [email, setEmail] = useState('');
@@ -20,6 +21,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
@@ -40,6 +42,8 @@ function Login() {
       }
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,6 +53,7 @@ function Login() {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/auth/register', {
         method: 'POST',
         headers: {
@@ -69,6 +74,8 @@ function Login() {
       }
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,6 +83,11 @@ function Login() {
 
   return (
     <div className="auth-container">
+      {loading && (
+        <div className="spinner-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       {isSignUp ? (
         <>
           <h2>Sign Up</h2>

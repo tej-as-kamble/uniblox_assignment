@@ -5,11 +5,13 @@ function Cart() {
   const [coupon, setCoupon] = useState("");
   const [status, setStatus] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const response = await fetch('https://uniblox-assignment.onrender.com/api/users/get-cart', {
           method: 'GET',
           headers: {
@@ -46,14 +48,18 @@ function Cart() {
         setProducts(productDetails);
       } catch (error) {
         console.error('Error fetching cart items or item details:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, [token]);
 
+
   const increaseQuantity = async (_id) => {
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/users/increase-quantity', {
         method: 'POST',
         headers: {
@@ -73,11 +79,14 @@ function Cart() {
     } catch (error) {
       console.error('Error increasing quantity:', error);
       alert('Error increasing quantity');
+    } finally {
+      setLoading(false);
     }
   };
 
   const decreaseQuantity = async (_id) => {
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/users/decrease-quantity', {
         method: 'POST',
         headers: {
@@ -96,11 +105,14 @@ function Cart() {
     } catch (error) {
       console.error('Error decreasing quantity:', error);
       alert('Error decreasing quantity');
+    } finally {
+      setLoading(false);
     }
   };
 
   const removeProduct = async (_id) => {
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/users/remove-item', {
         method: 'POST',
         headers: {
@@ -118,11 +130,14 @@ function Cart() {
     } catch (error) {
       console.error('Error removing product:', error);
       alert('Error removing product');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleApplyCoupon = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`https://uniblox-assignment.onrender.com/api/users/verify-coupon?code=${coupon.trim()}`, {
         method: 'GET',
         headers: {
@@ -145,6 +160,8 @@ function Cart() {
     } catch (error) {
       console.error('Error in verification:', error);
       alert(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -158,6 +175,7 @@ function Cart() {
 
   const handleOrderNow = async () => {
     try {
+      setLoading(true);
       const response = await fetch('https://uniblox-assignment.onrender.com/api/users/order-now', {
         method: 'POST',
         headers: {
@@ -181,11 +199,18 @@ function Cart() {
     } catch (err) {
       console.error('Error:', err.message);
       alert(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="cart-container">
+      {loading && (
+        <div className="spinner-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <h1 className="main-content-heading">Your Cart</h1>
       {products && products.length === 0 ? (
         <p>No products in your order.</p>
