@@ -8,7 +8,7 @@ function Items() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/items');
+        const response = await fetch('https://uniblox-assignment.onrender.com/api/items');
         const data = await response.json();
         setProducts(data); // Set the fetched data to state
       } catch (err) {
@@ -30,7 +30,7 @@ function Items() {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/users/add-item', {
+      const response = await fetch('https://uniblox-assignment.onrender.com/api/users/add-item', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

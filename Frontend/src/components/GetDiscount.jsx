@@ -17,7 +17,7 @@ const GetDiscount = () => {
 
   const getStatus = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/coupon-status', {
+      const response = await fetch('https://uniblox-assignment.onrender.com/api/users/coupon-status', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -59,7 +59,7 @@ const GetDiscount = () => {
 
   const handleCouponRequest = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/create-coupon', {
+      const response = await fetch('https://uniblox-assignment.onrender.com/api/users/create-coupon', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

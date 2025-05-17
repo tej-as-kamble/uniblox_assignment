@@ -7,7 +7,7 @@ function Order() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users/get-orders', {
+        const response = await fetch('https://uniblox-assignment.onrender.com/api/users/get-orders', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -21,7 +21,7 @@ function Order() {
 
         const orderData = await response.json();
         const orderDetails = await Promise.all(orderData.orders.map(async (item) => {
-          const itemResponse = await fetch(`http://localhost:5000/api/items/${item}`, {
+          const itemResponse = await fetch(`https://uniblox-assignment.onrender.com/api/items/${item}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,

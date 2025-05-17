@@ -10,7 +10,7 @@ function Cart() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users/get-cart', {
+        const response = await fetch('https://uniblox-assignment.onrender.com/api/users/get-cart', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -24,7 +24,7 @@ function Cart() {
 
         const cartData = await response.json();
         const productDetails = await Promise.all(cartData.cart.map(async (item) => {
-          const itemResponse = await fetch(`http://localhost:5000/api/items/${item.item}`, {
+          const itemResponse = await fetch(`https://uniblox-assignment.onrender.com/api/items/${item.item}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -54,7 +54,7 @@ function Cart() {
 
   const increaseQuantity = async (_id) => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/increase-quantity', {
+      const response = await fetch('https://uniblox-assignment.onrender.com/api/users/increase-quantity', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -78,7 +78,7 @@ function Cart() {
 
   const decreaseQuantity = async (_id) => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/decrease-quantity', {
+      const response = await fetch('https://uniblox-assignment.onrender.com/api/users/decrease-quantity', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -101,7 +101,7 @@ function Cart() {
 
   const removeProduct = async (_id) => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/remove-item', {
+      const response = await fetch('https://uniblox-assignment.onrender.com/api/users/remove-item', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -123,7 +123,7 @@ function Cart() {
 
   const handleApplyCoupon = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/verify-coupon?code=${coupon.trim()}`, {
+      const response = await fetch(`https://uniblox-assignment.onrender.com/api/users/verify-coupon?code=${coupon.trim()}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -158,7 +158,7 @@ function Cart() {
 
   const handleOrderNow = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/order-now', {
+      const response = await fetch('https://uniblox-assignment.onrender.com/api/users/order-now', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

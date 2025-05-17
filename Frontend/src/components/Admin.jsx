@@ -16,7 +16,7 @@ const Admin = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/purchase-stats", {
+      const res = await fetch("https://uniblox-assignment.onrender.com/api/admin/purchase-stats", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,7 +34,7 @@ const Admin = () => {
 
   const fetchCoupons = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/coupons", {
+      const res = await fetch("https://uniblox-assignment.onrender.com/api/admin/coupons", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,7 +49,7 @@ const Admin = () => {
   const handleGiveCoupon = async (index) => {
     const couponId = usersData[index]._id;
     try {
-      await fetch(`http://localhost:5000/api/admin/coupons-accept/${couponId}`, {
+      await fetch(`https://uniblox-assignment.onrender.com/api/admin/coupons-accept/${couponId}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ const Admin = () => {
   const handleRejectCoupon = async (index) => {
     const couponId = usersData[index]._id;
     try {
-      await fetch(`http://localhost:5000/api/admin/coupons-reject/${couponId}`, {
+      await fetch(`https://uniblox-assignment.onrender.com/api/admin/coupons-reject/${couponId}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
