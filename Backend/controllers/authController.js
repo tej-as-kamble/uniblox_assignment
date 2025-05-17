@@ -41,7 +41,7 @@ exports.registerUser = [
       res
         .header('Authorization', `Bearer ${token}`)
         .status(201)
-        .json({ message: 'User created successfully', userId: user._id, token });
+        .json({ message: 'User created successfully', token: token, email: user.email });
 
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
